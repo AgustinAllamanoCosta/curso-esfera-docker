@@ -1,0 +1,18 @@
+{
+	"request": {
+		"urlPath": "/recargaSubeNSS",
+		"method": "POST",
+		"bodyPatterns": [
+			{
+				"contains": "\"userId\":\"412\""
+			}
+		]
+	},
+	"response": {
+		"status": 412,
+		"headers":{
+			"content-type": "application/json"
+		},
+		"body": "{\"message\":\"error 412!\"}"
+	}
+}

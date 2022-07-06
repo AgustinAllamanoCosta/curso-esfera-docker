@@ -1,0 +1,19 @@
+version: '2.1'
+services:
+    modo-postgres:
+        container_name: postgres-local
+        ports:
+            - '5432:5432'
+        volumes:
+            - './dbMock:/docker-entrypoint-initdb.d/'
+        environment:
+            - POSTGRES_PASSWORD=postgres
+        image: postgres:alpine
+
+    modo-wiremock:
+        ports:
+            - '8080:8080'
+        volumes:
+            - './integrationTest/apisMock:/home/wiremock'
+        container_name: wire-mock-local
+        image: 'wiremock/wiremock:2.33.1'

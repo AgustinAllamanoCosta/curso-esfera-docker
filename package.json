@@ -1,0 +1,65 @@
+{
+  "name": "curso-docker-esfera",
+  "version": "1",
+  "description": "ejercios para el curso de docker inicial de esfera",
+  "main": "index.js",
+  "author": "aallamano <agustin.allamano@grupoesfera.com.ar>",
+  "license": "MIT",
+  "engines": {
+    "yarn": ">=1.22.17",
+    "node": ">=16.14.0"
+  },
+  "keywords": [
+    "api",
+    "curso genial de docker",
+    "davido y agus son los mejores",
+    "que haces viendo este archivo ?",
+    "curso de docker",
+    "super curso esferico de docker"
+  ],
+  "scripts": {
+    "build": "npx rimraf dist && npx tsc",
+    "clean": "npx rimraf dist",
+    "services:start": "docker-compose -f ./src/integration-tests/docker-compose.yml up -d",
+    "services:stop": "docker-compose -f ./src/integration-tests/docker-compose.yml down",
+    "runServer": "node ./dist/Server.js",
+    "start": " yarn runServer",
+    "test:all": "jest --coverage=false --detectOpenHandles"
+  },
+  "dependencies": {
+   
+  },
+  "devDependencies": {
+    
+  },
+  "jest": {
+    "verbose": true,
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "transformIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "collectCoverageFrom": [
+      "<rootDir>/src/**/*.ts",
+    ],
+    "setupFiles": [
+      "dotenv/config"
+    ],
+    "testRegex": ".*.test.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "clearMocks": true,
+    "testEnvironment": "node",
+    "preset": "ts-jest",
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "coverageProvider": "v8"
+  }
+}

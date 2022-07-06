@@ -1,0 +1,18 @@
+{
+    "request": {
+        "urlPath": "/recargaSubeNSS",
+        "method": "POST",
+        "bodyPatterns": [
+            {
+                "contains": "\"userId\":\"200\""
+            }
+        ]
+    },
+    "response": {
+        "status": 200,
+        "headers":{
+            "content-type": "application/json"
+        },
+        "bodyFileName": "subeRechargeResponse.json"
+    }
+}
