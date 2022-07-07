@@ -24,14 +24,21 @@
     "services:stop": "docker-compose -f ./src/integration-tests/docker-compose.yml down",
     "runServer": "node ./dist/Server.js",
     "start": " yarn runServer",
-    "test:all": "jest --coverage=false --detectOpenHandles"
+    "test": "jest --coverage=false --detectOpenHandles"
   },
   "dependencies": {
-   
+    "@types/express": "^4.17.13",
+    "@types/jest": "^28.1.4",
+    "@types/supertest": "^2.0.12",
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "jest": "^28.1.2",
+    "pg": "^8.7.3",
+    "supertest": "^6.2.4",
+    "typecript": "^0.0.1-security"
   },
-  "devDependencies": {
-    
-  },
+  "devDependencies": {},
   "jest": {
     "verbose": true,
     "moduleFileExtensions": [
@@ -46,7 +53,7 @@
       "/node_modules/"
     ],
     "collectCoverageFrom": [
-      "<rootDir>/src/**/*.ts",
+      "<rootDir>/src/**/*.ts"
     ],
     "setupFiles": [
       "dotenv/config"
