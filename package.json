@@ -36,9 +36,9 @@
     "jest": "^28.1.2",
     "pg": "^8.7.3",
     "supertest": "^6.2.4",
+    "ts-jest": "^28.0.5",
     "typecript": "^0.0.1-security"
   },
-  "devDependencies": {},
   "jest": {
     "verbose": true,
     "moduleFileExtensions": [
