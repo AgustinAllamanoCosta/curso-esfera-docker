@@ -20,11 +20,12 @@
   "scripts": {
     "build": "npx rimraf dist && npx tsc",
     "clean": "npx rimraf dist",
-    "services:start": "docker-compose -f ./src/integration-tests/docker-compose.yml up -d",
-    "services:stop": "docker-compose -f ./src/integration-tests/docker-compose.yml down",
     "runServer": "node ./dist/Server.js",
     "start": " yarn runServer",
-    "test": "jest --coverage=false --detectOpenHandles"
+    "test": "jest -t Debug --runInBand --coverage=false --detectOpenHandles",
+    "test:pto1": "jest -t Uno --runInBand --coverage=false --detectOpenHandles ",
+    "test:pto2": "jest -t Dos --runInBand --coverage=false --detectOpenHandles",
+    "test:all": "jest --runInBand --coverage=false --detectOpenHandles"
   },
   "dependencies": {
     "@types/express": "^4.17.13",

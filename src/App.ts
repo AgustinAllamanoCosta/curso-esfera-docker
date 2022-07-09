@@ -1,6 +1,5 @@
 import express,{ Request, Response } from 'express';
 import axios from 'axios';
-const pack = require('../package.json');
 const { Client } = require('pg')
 
 class App {
@@ -14,6 +13,7 @@ class App {
 
     constructor() {
         this.app = express();
+        this.pdClient.connect();
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         this.app.route('/health').get(
@@ -21,19 +21,11 @@ class App {
                 return res.status(200).send('ok :D');
              }
         );
-        this.app.route('/recargaSube').post(
+        
+        this.app.route('/servicioSube').get(
             async (req: Request, res: Response) => {
                 try{
-                    const informacionDeRecarga = {
-                        montoACargar: req.body.monto,
-                        numerDeTarjeta: req.body.numero,
-                        idDeUsuario: req.body.idUsuario,
-                    };
-                    const respuesta:any = await this.ejecutarPeticion(informacionDeRecarga);
-                    const query = `INSERT INTO transacciones_sube(
-                        numero_de_tarjeta, id_de_transaccion)
-                        VALUES ('${req.body.numero}',${respuesta.idTransaccion};`;
-                    this.ejecutarConsultaBase(query);
+                    const respuesta =  await axios.get(process.env.SERVICIO_SUBE_URL as string);
                     return res.status(respuesta.status).send(':)');
                 }catch(error:any){
                     console.log(`ROMPE PEPE ROMPEEEEE => ${JSON.stringify(error)}`);
@@ -41,65 +33,59 @@ class App {
                 }
              }
         );
+
+        this.app.route('/recargaSube').post(
+            async (req: Request, res: Response) => {
+                let status = 500;
+                let message:any = 'Ups :(';
+                try{
+                    const informacionDeRecarga = {
+                        montoACargar: req.body.monto,
+                        numerDeTarjeta: req.body.numero,
+                        idDeUsuario: req.body.idUsuario,
+                    };
+                    const respuesta:any =  await axios.post(process.env.SUBE_URL as string,informacionDeRecarga);
+                    const query = `INSERT INTO transacciones_sube(
+                        numero_de_tarjeta, id_de_transaccion)
+                        VALUES ('${req.body.numero}','${respuesta.data.idTransaccion}')`;
+                        await this.ejecutarConsultaBase(query);
+                    status = respuesta.status;
+                    message =  ':)';
+                }catch(error:any){
+                    console.log(`ROMPE PEPE ROMPEEEEE => ${JSON.stringify(error)}`);
+                }finally{
+                    return res.status(status).send(message);
+                }
+             }
+        );
         
         this.app.route('/recargaSube').get(
             async (req: Request, res: Response) => {
+                let status = 500;
+                let message:any = ':(';
                 try{
                     const query = `SELECT * FROM transacciones_sube WHERE id_de_transaccion = ${req.query.idDeTransaccion}`;
-                    const respuestaBase = this.ejecutarConsultaBase(query);
-                    return res.status(200).send(respuestaBase);
+                    const respuestaBase = await this.ejecutarConsultaBase(query);
+                   status = 200;
+                   message = respuestaBase;
                 }catch(error:any){
                     console.log(`NOOOO DONDE TE SENTASTE ! => ${JSON.stringify(error)}`);
-                    return res.status(500).send('Ups :(');
-                }
-             }
-        );
-
-        this.app.route('/tarjetaSube').post(
-            async (req: Request, res: Response) => {
-                try{
-                    const query = `INSERT INTO tarjetas_sube(
-                        numero_de_tarjeta, id_de_usuario)
-                        VALUES ('${req.body.numero}',${req.body.idUsuario};`;
-                    this.ejecutarConsultaBase(query);
-                    return res.status(200).send(':)');
-                }catch(error:any){
-                    console.log(`ROMPE PEPE ROMPEEEEE => ${JSON.stringify(error)}`);
-                    return res.status(500).send('Ups :(');
-                }
-             }
-        );
-
-        this.app.route('/tarjetaSube').get(
-            async (req: Request, res: Response) => {
-                try{
-                    const query = `SELECT * FROM tarjetas_sube WHERE id_de_usuario = ${req.body.idUsuario};`;
-                    const respuesBase = this.ejecutarConsultaBase(query);
-                    return res.status(200).send(respuesBase);
-                }catch(error:any){
-                    console.log(`ROMPE PEPE ROMPEEEEE => ${JSON.stringify(error)}`);
-                    return res.status(500).send('Ups :(');
+                }finally{
+                    return res.status(status).send(message);
                 }
              }
         );
    }
 
-   private async ejecutarPeticion(peticion:any){
-        const respuesta =  await axios.post(
-        process.env.SUBE_URL as string,
-        peticion);
-        return respuesta;
-    }
-
     private async ejecutarConsultaBase(query:string){
-        this.pdClient.connect()
+        console.log("ejecutando consulta en la base");
         return this.pdClient.query(query, (err:any, res:any) => {
         if (err){
             console.error(err);
+            this.pdClient.end();
             throw err;
         } 
-        console.log(res)
-        this.pdClient.end()
+        this.pdClient.end();
         return res;
         })
     }

@@ -1,10 +1,26 @@
 import app from './App';
 import supertest from 'supertest';
 
-describe('Curso de docker', () => {
-    describe('Puto Nro Uno',() => {
-        it(`Se tendra que poder realizar una recarga de una tarjeta sube cuando
-         se pasa un numero de tarjeta, un monto y un id de usuario`, async ()=>{
+describe('Curso de docker Test con Container :D', () => {
+
+    describe('Debug',() => {
+        it(`Verifico que la app esta corriendo`, async ()=>{
+            const respuestaSube = await supertest(app).get('/health');
+            expect(respuestaSube.status).toBe(200);
+            expect(respuestaSube.text).toBe('ok :D');
+        });
+    });
+
+    describe('Punto Nro Uno 1 : Iniciando un contenedor docker',() => {
+        it('Podes consultar el servicio de estado del servicio de sube',async () => {
+            const respuestaSube = await supertest(app).get('/servicioSube');
+            expect(respuestaSube.status).toBe(200);
+            expect(respuestaSube.text).toBe(':)');
+        });
+    });
+
+    describe('Punto Nro Dos 2 : Montando volumenes, viendo logs y usando el -c de un contenedor',() => {
+        it(`Tiene que poder cargare 10 pesos a la tarjeta del usuario y registrarse en la base`, async ()=>{
             const datosUsuario = {
                 monto: 10,
                 numero: 112233446677,
@@ -12,55 +28,23 @@ describe('Curso de docker', () => {
             }
             const respuestaSube = await supertest(app).post('/recargaSube').send(datosUsuario);
             expect(respuestaSube.status).toBe(200);
-            expect(respuestaSube.body).toBe(':)');
-         });
-        
-        it(`En caso de que el endpoint de sube responda un 412 se tandra que 
-         responde el msj no se pudo realizar la recarga`,async ()=>{
-            const datosUsuario = {
-                monto: 10,
-                numero: 112233446677,
-                idUsuario: 412,
-            }
-            const respuestaSube = await supertest(app).post('/recargaSube').send(datosUsuario);
-            expect(respuestaSube.status).toBe(412);
-            expect(respuestaSube.body).toBe('no se pudo realizar la recarga');
+            expect(respuestaSube.text).toBe(':)');
          });
 
-        it(`En caso de que el endpoint de sube responde 500 se tendra que responder que 
-         vuelva a intentar mas tarde, el servicio no esta disponible`, async ()=>{
+        it(`Tiene que romper ya que no se le puede carga la tarjeta del usuario 500`, async ()=>{
             const datosUsuario = {
                 monto: 10,
                 numero: 112233446677,
                 idUsuario: 500,
+            };
+            let respuestaSube:any;
+            try{
+                respuestaSube = await supertest(app).post('/recargaSube').send(datosUsuario);
+                fail("No tendria que llegar a este punto");
+            }catch(error:any){
+                expect(respuestaSube.status).toBe(500);
+                expect(respuestaSube.text).toBe('Ups :(');
             }
-            const respuestaSube = await supertest(app).post('/recargaSube').send(datosUsuario);
-            expect(respuestaSube.status).toBe(500);
-            expect(respuestaSube.body).toBe('el servicio no esta disponible');
          });
     });
-
-    describe('Puto Nro Dos',() => {
-        it(`Cuando se ejecute una recarga se tendra que poder guardar en la base de datos
-            el id de usuario, tarjeta y el id de transaccion de sube`,()=>{
-
-            });
-        
-        it(`En caso de que sube responde un 412 se quiere guardar ese intento de recargar
-            en una tabla de la base de datos`,()=>{
-
-            });
-
-        it(`En caso de consultar por una recarga se que exista en la base de datos`,()=>{
-
-        });
-    });
-
-    describe('Puto Nro Tres',() => {
-        it(`Realizar un CRUD de tarjetas donde se pueda realizar el alta de una tarjeta por id de 
-        usuario y numero de tarjeta`,()=>{
-            
-        });
-    });
-
 });

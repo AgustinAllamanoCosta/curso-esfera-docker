@@ -4,7 +4,7 @@
         "method": "POST",
         "bodyPatterns": [
             {
-                "contains": "\"userId\":\"500\""
+                "contains": "{\"montoACargar\":10,\"numerDeTarjeta\":112233446677,\"idDeUsuario\":200}"
             }
         ]
     },

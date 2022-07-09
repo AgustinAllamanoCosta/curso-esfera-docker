@@ -4,12 +4,12 @@
         "method": "POST",
         "bodyPatterns": [
             {
-                "contains": "\"userId\":\"200\""
+                "contains": "{\"montoACargar\":10,\"numerDeTarjeta\":112233446677,\"idDeUsuario\":500}"
             }
         ]
     },
     "response": {
-        "status": 200,
+        "status": 500,
         "headers":{
             "content-type": "application/json"
         },
