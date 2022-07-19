@@ -26,7 +26,7 @@ docker rm wiremock-local
 ```
 #### Para iniciar el contenedor de wiere mock:
 ```
-docker run -it -d --name wiremock-local -p <puerto en local>:8080
+docker run -it -d --name wiremock-local -p <puerto en local>:8080 wiremock/wiremock:2.33.1
 ```
 
 #### Comandos Punto Dos
