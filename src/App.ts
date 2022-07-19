@@ -4,16 +4,10 @@ const { Client } = require('pg')
 
 class App {
    public app: express.Application;
-   private pdClient = new Client({
-            host: process.env.DB_HOST,
-            port: process.env.DB_PORT,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            })
+   private pdClient:any;
 
     constructor() {
         this.app = express();
-        this.pdClient.connect();
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         this.app.route('/health').get(
@@ -78,6 +72,15 @@ class App {
    }
 
     private async ejecutarConsultaBase(query:string){
+        if(this.pdClient == undefined){
+            this.pdClient = new Client({
+                host: process.env.DB_HOST,
+                port: process.env.DB_PORT,
+                user: process.env.DB_USER,
+                password: process.env.DB_PASSWORD,
+                })
+        }
+        this.pdClient.connect();
         console.log("ejecutando consulta en la base");
         return this.pdClient.query(query, (err:any, res:any) => {
         if (err){
